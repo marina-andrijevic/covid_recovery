@@ -17,24 +17,62 @@ library(cowplot)
 
 # IAM regions from McCollum et al. 
 iam.regs <- read_excel('iam_regions.xlsx') %>% 
-  mutate(country.code = countrycode(country, 'country.name', 'iso3c')) %>% 
+  mutate(country.code = countrycode(country, 'country.name', 'iso3c'),
+         region = recode(region, 'OECD90+EU' = 'OECD+')) %>% 
   filter(!country == 'Netherlands Antilles') %>% 
   mutate(country.code = country.code %>% paste %>% str_replace('NA', 'EU'),
          country.code = recode(country.code, 'EUM' = 'NAM')) #change iso3 code for Namibia
+
+
+exch.rates <- read.csv('wb_exch_rate.csv', skip = 3) %>% 
+  rename_all(tolower) %>% 
+  select(country.code, x2018) %>% 
+  rename(ex.rate = x2018) %>% 
+  right_join(iam.regs, by = 'country.code')
+
+dat.prep <- read.csv("API_NY.GDP.MKTP.CD_DS2_en_csv_v2_988718.csv", skip = 3) %>% 
+  rename_all(tolower) %>% 
+  select(country.code, country.name, x2018) %>% 
+  rename(gdp.2018 = x2018) %>% 
+  left_join(exch.rates, by = 'country.code') %>% 
+  drop_na(region) %>% 
+  
+  select(country.code, country, region, gdp.2018, ex.rate)
+
+#write.csv(dat.prep, 'stim_packages_imf.csv')
 
 # Stimulus packages from Oxford University policy tracker:
 
 eu <- data.frame(CountryName = 'European Union', CountryCode = 'EU', E3_Fiscal.measures = as.numeric(583*10^9)) # add the EU estimates separately (not in the Oxford tracker, but in the IMF one)
 
-stim.reg <- read.csv('/Users/marinaandrijevic/PhD/covid_recovery/covid-policy-tracker/data/OxCGRT_latest.csv') %>% 
+stim.cntry <- read.csv('/Users/marinaandrijevic/PhD/covid_recovery/covid-policy-tracker/data/OxCGRT_latest.csv') %>% 
   select(CountryName, CountryCode, E3_Fiscal.measures) %>%
-  #bind_rows(eu) %>% 
+  bind_rows(eu) %>% 
   left_join(iam.regs, by = c('CountryCode' = 'country.code')) %>% 
   group_by(CountryCode) %>% 
   mutate(Stimulus = sum(E3_Fiscal.measures, na.rm = T)) %>% 
   ungroup()%>% 
   filter(!duplicated(CountryCode)) %>% 
-  mutate(World = sum(Stimulus, na.rm = T)) %>% 
+  mutate(World = sum(Stimulus, na.rm = T))
+
+# Our stocktake of stimulus packages for G20
+
+stim.g20 <- read_excel('investments_15.xlsx', sheet = 'stimulus.packages') %>% 
+  mutate(CountryCode = countrycode(country, 'country.name', 'iso3c'),
+         CountryCode = CountryCode %>% paste %>% str_replace('NA', 'EU')) %>% 
+  select(CountryCode, total) %>% 
+  rename(stim.imf = total) %>% 
+  left_join(stim.cntry %>% select(CountryCode, Stimulus) %>% rename(stim.ox = Stimulus), by = 'CountryCode') %>%
+  mutate(stim.ox = stim.ox/10^9,
+    total.ox = sum(stim.ox, na.rm = T),
+  total.imf = sum(stim.imf, na.rm = T),
+  diff = total.ox - total.imf)
+
+#write.csv(stim.g20, 'stim_data_comp.csv')
+
+# Stimulus aggregated by IAM regions
+
+stim.reg <- stim.cntry %>% 
   group_by(region) %>% 
   mutate(Stimulus = sum(Stimulus, na.rm = T)) %>% 
   ungroup() %>% 
@@ -52,46 +90,108 @@ e.type1  <- c('Energy Efficiency', 'CCS', 'Electricity - T&D and Storage', 'Extr
               'Extraction and Conversion - Bioenergy', 'Hydrogen - Non-fossil', 'Electricity - Non-bio Renewables', 
               'Hydrogen - Fossil', 'Electricity - Fossil Fuels w/o CCS', 'Extraction and Conversion - Fossil Fuels') # selected sectors to be aggreagted below
 
-full.invest <- read_excel('NE_paper_SM_data.xlsx', sheet = 'Investment_Annual') %>% 
+e.group2 <- str_wrap(c('Fossil electricity & hydrogen w/o CCS', 'Fossil fuels extraction & conversion', 'Electricity - T&D and Storage', 'Nuclear & CCS', 'Renewables', 'Energy Efficiency' ), 20)
+
+
+interp <- function(df) {
+  with(df, approx(x=index, y=value, xout=min(index):max(index))) %>% 
+    bind_cols()
+}
+
+invest.prep <- read_excel('NE_paper_SM_data.xlsx', sheet = 'Investment_Annual') %>% 
   rename_all(tolower) %>% 
-  mutate(region = recode(region, 'R5ASIA' = 'ASIA', 'R5LAM' = 'LAM', 'R5MAF' = 'MAF', 'R5OECD90+EU' = 'OECD90+EU', 'R5REF' = 'REF')) %>%
+  mutate(region = recode(region, 'R5ASIA' = 'ASIA', 'R5LAM' = 'LAM', 'R5MAF' = 'MAF', 'R5OECD90+EU' = 'OECD+', 'R5REF' = 'REF')) %>%
   select(model, region, scenario, variable, '2020':'2025') %>% 
   filter(variable %in% e.type1) %>% 
   pivot_longer('2020':'2025', names_to = 'year', values_to = 'investment') %>% 
   mutate(year = as.integer(year), 
-         investment = str_remove(investment, "%") %>% as.numeric(investment)) %>% 
+         investment = str_remove(investment, "%") %>% as.numeric(investment)) 
+
+invest.interp <- invest.prep %>% 
+  group_by(scenario, model, region, variable) %>% 
+  rename(index = year, value = investment) %>% 
+  do(interp(.)) %>% 
+  rename(year = x, investment = y) %>% 
+  right_join(invest.prep %>% distinct(region), by = 'region')
+
+invest <- invest.interp %>% 
   spread(variable, investment) %>% 
   mutate('Fossil electricity &\nhydrogen w/o CCS' = `Electricity - Fossil Fuels w/o CCS` + `Hydrogen - Fossil`,
          'Fossil fuels\nextraction &\nconversion' = `Extraction and Conversion - Fossil Fuels`,
          'Nuclear & CCS' = `Extraction and Conversion - Nuclear` + `CCS`,
          'Renewables' = `Electricity - Non-bio Renewables` + `Hydrogen - Non-fossil` + `Extraction and Conversion - Bioenergy`) %>%
   rename('Electricity - T&D\nand Storage' = 'Electricity - T&D and Storage') %>% 
-  gather(variable, investment, -c(model, region, scenario, year)) 
+  gather(variable, investment, -c(model, region, scenario, year)) %>% 
+  filter(variable %in% e.group2)
+
+
 
 # Derive shifts in investments from current policies to 1.5C-compatible energy sector
 
-shift.invest <- full.invest %>% 
-  group_by(model, region, variable, scenario) %>% 
-  mutate(total.invest = sum(investment)) %>%  #aggregate investments
+# Figure 1: p1) Shifts in energy investments (total for 2020-2025) from current policy to 1.5C; p2) absolute stimulus packages aggregated by IAM regions
+
+# shift.invest <- invest %>% 
+#   filter(!year == 2025) %>% 
+#   group_by(model, region, variable, scenario) %>% 
+#   mutate(total.invest = sum(investment)) %>%  #aggregate investments
+#   ungroup() %>% 
+#   select(-investment) %>% 
+#   spread(scenario, total.invest)%>% 
+#   filter(year == 2020) %>%  # since the values are aggregated over time, remove duplicates here (not actual filtering)
+#   mutate(shift = `1.5C` - `CPol`) %>% 
+#   group_by(region, year, variable) %>% 
+#   mutate(shift.mean = mean(shift),
+#          cpol.mean = mean(`CPol`)) %>% #average shift across models
+#   ungroup() %>% 
+#   filter(model == 'MESSAGEix-GLOBIOM') %>% 
+#   group_by(region) %>% 
+#   mutate(net = sum(shift.mean)) %>% # show net increment in the 1.5 shift
+#   ungroup()
+
+shift.invest <- invest %>% 
+  filter(!year == 2025) %>% 
+  group_by(region, variable, scenario, year) %>% # model average
+  mutate(mod.avg = mean(investment)) %>% 
   ungroup() %>% 
+  select(-investment) %>% 
+  filter(model == 'MESSAGEix-GLOBIOM') %>%
+  group_by(region, variable, scenario) %>% 
+  mutate(total.invest = sum(mod.avg)) %>% # sum model averages for the time period
+  ungroup() %>% 
+  select(-mod.avg) %>% 
+  spread(scenario, total.invest)%>% 
+  filter(year == 2020) %>%  # since the values are aggregated over time, remove duplicates here (not actual filtering)
+  mutate(shift = `1.5C` - `CPol`) %>% # calculate the difference between scenarios per sector
+  group_by(region) %>% 
+  mutate(net = sum(shift)) %>% # show net increment in the 1.5 shift
+  ungroup()
+
+shift.invest.yr <- invest %>% 
+  filter(!year == 2025) %>% 
+  group_by(model, region, variable, scenario) %>% 
+  mutate(total.invest = mean(investment, na.rm = T)) %>%  #average investments per year
+  ungroup()  %>% 
   select(-investment) %>% 
   spread(scenario, total.invest) %>% 
   filter(year == 2020) %>%  # since the values are aggregated over time, remove duplicates here (not actual filtering)
   mutate(shift = `1.5C` - `CPol`) %>% 
   group_by(region, year, variable) %>% 
-  mutate(mod.mean = mean(shift)) %>% #average shift across models
+  mutate(shift.mean.yr = mean(shift),
+         cpol.mean.yr = mean(`CPol`)) %>% #average shift across models
   ungroup() %>% 
-  filter(model == 'MESSAGEix-GLOBIOM') # since the values are averaged over time, remove duplicates here (not actual filtering)
+  filter(model == 'MESSAGEix-GLOBIOM') %>% 
+  group_by(region) %>% 
+  mutate(net = sum(shift.mean.yr)) %>% # show net increment in the 1.5 shift
+  ungroup()
 
 
-# Figure 1: p1) Shifts in energy investments (total for 2020-2025) from current policy to 1.5C; p2) absolute stimulus packages aggregated by IAM regions
+reg1 <- c('ASIA', 'LAM', 'MAF', 'OECD+','REF', 'World')
 
-e.group2 <- str_wrap(c('Fossil electricity & hydrogen w/o CCS', 'Fossil fuels extraction & conversion', 'Electricity - T&D and Storage', 'Nuclear & CCS', 'Renewables', 'Energy Efficiency' ), 20)
+reg2 <- c('CHN', 'EU', 'USA', 'IND')
 
-reg1 <- c('ASIA', 'LAM', 'MAF', 'OECD90+EU', 'REF', 'World')
-
-p1 <- ggplot(shift.invest %>% filter(region %in% reg1 & variable %in% e.group2)) +
-  geom_bar(aes(region, mod.mean, fill = factor(variable, levels = e.group2)), width = 0.5, stat = 'identity', color = 'black', size = 0.1) +
+p1 <- ggplot(shift.invest.yr %>% filter(region %in% reg1 & variable %in% e.group2)) +
+  #geom_bar(aes(region, cpol.mean, fill = factor(variable, levels = e.group2)), width = 0.5, stat = 'identity', color = 'black', size = 0.1) +
+  geom_bar(aes(region, shift.mean.yr, fill = factor(variable, levels = e.group2)), width = 0.5, stat = 'identity', color = 'white', size = 0.1) +
   labs(x = 'Scenario', y = 'USD billion', fill = '', title = 'Relative change in energy investments:\n1.5C vs. current policy (2020-2025)') + #total investments 2020-2025
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, size = 12), 
@@ -103,23 +203,87 @@ p1 <- ggplot(shift.invest %>% filter(region %in% reg1 & variable %in% e.group2))
                                'Electricity - T&D\nand Storage' = '#f4c785', 
                                'Nuclear & CCS' = '#faeeb2', 
                                'Renewables' = '#3c509e',
-                               'Energy Efficiency' = '#5095cf'))
+                               'Energy Efficiency' = '#5095cf')) +
+  geom_point(aes(region, net), shape=95, size=23, alpha = 0.15, color = 'black')
 
 
 stim.col <- brewer.pal(9, "Blues")[3:9] #colors for the stiumulus pacakges
 
 p2 <- ggplot(stim.reg %>% filter(region %in% reg1)) + 
   geom_bar(aes(region, Stimulus/1e9, fill = region), width = 0.6, stat = 'identity') +
-  labs(x = 'Country', y = 'USD billion', title = 'Stimulus pacakges\n ') +
+  labs(x = 'Country', y = 'USD billion', title = 'Stimulus packages\n ') +
   theme_bw() +
   theme(legend.position = "none", 
         axis.text.x = element_text(angle = 90, size = 12),
         axis.title.x = element_blank()) +
   #axis.title.y = element_text(size = 12)) +
-  scale_y_continuous(breaks = c(0, 2000, 4000, 6000, 8000, 10000)) +
-  scale_fill_manual(values = stim.col) 
+  scale_y_continuous(limits = c(-2000, 9000), breaks = c(-2000, 0, 2000, 4000, 6000, 8000, 10000)) +
+  scale_fill_manual(values = stim.col)
 
 plot_grid(p1, p2, nrow = 1, rel_widths = c(2/3, 1/3))
+
+
+# Four biggest economies
+
+p1 <- ggplot(shift.invest %>% filter(region %in% reg2 & variable %in% e.group2)) +
+  #geom_bar(aes(region, cpol.mean, fill = factor(variable, levels = e.group2)), width = 0.5, stat = 'identity', color = 'black', size = 0.1) +
+  geom_bar(aes(region, shift.mean, fill = factor(variable, levels = e.group2)), width = 0.5, stat = 'identity', color = 'white', size = 0.1) +
+  labs(x = 'Scenario', y = 'USD billion', fill = '', title = 'Relative change in energy investments:\n1.5C vs. current policy (2020-2025)') + #total investments 2020-2025
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, size = 12), 
+        legend.key.height=unit(1, "cm"), 
+        legend.text = element_text(size = 7),
+        axis.title.x = element_blank()) +
+  scale_fill_manual(values = c('Fossil electricity &\nhydrogen w/o CCS' = '#a0202f', 
+                               'Fossil fuels\nextraction &\nconversion' = '#cf4d3d', 
+                               'Electricity - T&D\nand Storage' = '#f4c785', 
+                               'Nuclear & CCS' = '#faeeb2', 
+                               'Renewables' = '#3c509e',
+                               'Energy Efficiency' = '#5095cf')) +
+  geom_point(aes(region, net), shape=95, size=33, alpha = 0.2, color = 'black') +
+  scale_y_continuous(limits = c(-500,2700), breaks = c(-500, 0, 500, 1000, 1500, 2000, 2500))
+
+
+stim.col <- brewer.pal(9, "Blues")[3:9] #colors for the stiumulus pacakges
+
+p2 <- ggplot(stim.cntry %>% filter(CountryCode %in% reg2)) + 
+  geom_bar(aes(CountryCode, Stimulus/1e9, fill = CountryCode), width = 0.6, stat = 'identity') +
+  labs(x = 'Country', y = 'USD billion', title = 'Stimulus packages\n ') +
+  theme_bw() +
+  theme(legend.position = "none", 
+        axis.text.x = element_text(angle = 90, size = 12),
+        axis.title.x = element_blank()) +
+  #axis.title.y = element_text(size = 12)) +
+  scale_y_continuous(limits = c(-500, 2700), breaks = c(-500, 0, 500, 1000, 1500, 2000, 2500)) +
+  scale_fill_manual(values = stim.col)
+
+plot_grid(p1, p2, nrow = 1, rel_widths = c(2/3, 1/3))
+
+# Total investments
+
+dat <- shift.invest %>% 
+  select(region, year, variable, '1.5C', '2C') %>% 
+  gather(scenario, energy.invest, -region, -year, -variable)
+
+ggplot(dat %>% filter(region %in% reg1 & variable %in% e.group2)) +
+  geom_bar(aes(scenario, energy.invest, fill = factor(variable, levels = e.group2)), width = 0.5, stat = 'identity', color = 'black', size = 0.1) +
+  #geom_bar(aes(region, shift.mean, fill = factor(variable, levels = e.group2)), width = 0.5, stat = 'identity', color = 'white', size = 0.1) +
+  labs(x = 'Scenario', y = 'USD billion', fill = '', title = 'Relative change in energy investments:\n1.5C vs. current policy (2020-2025)') + #total investments 2020-2025
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, size = 12), 
+        legend.key.height=unit(1, "cm"), 
+        legend.text = element_text(size = 7),
+        axis.title.x = element_blank()) +
+  scale_fill_manual(values = c('Fossil electricity &\nhydrogen w/o CCS' = '#a0202f', 
+                               'Fossil fuels\nextraction &\nconversion' = '#cf4d3d', 
+                               'Electricity - T&D\nand Storage' = '#f4c785', 
+                               'Nuclear & CCS' = '#faeeb2', 
+                               'Renewables' = '#3c509e',
+                               'Energy Efficiency' = '#5095cf')) +
+  #geom_point(aes(region, net), shape=95, size=23, alpha = 0.15, color = 'black') +
+  scale_y_continuous(limits = c(-2000,9000), breaks = c(-2000, 0, 2000, 4000, 6000, 8000)) +
+  facet_wrap(~region)
+                      
 
 
 
@@ -147,7 +311,11 @@ gdp.reg <- read.csv("API_NY.GDP.MKTP.CD_DS2_en_csv_v2_988718.csv", skip = 3) %>%
 
 # Calculate average yearly investment per sector for the 1.5C pathway (2020-2025)
 
-avg.yr.invest <- full.invest %>% 
+big.cntry.stim <- read.csv('big_countries_stimulus.csv') %>% 
+  select(country.code, individuals.households, health, loans.guarantees, uncategorized.other) %>% 
+  gather(sector, stimulus, -country.code)
+
+avg.yr.invest <- invest %>% 
   group_by(region, variable, scenario, year) %>% 
   mutate(avg.invest = mean(investment)) %>% # mean across models
   ungroup() %>% 
@@ -165,6 +333,14 @@ avg.yr.invest <- full.invest %>%
   mutate(pct.gdp = avg.invest/gdp*100) %>% 
   mutate(invest.type = ifelse(variable == 'COVID-19 Stimulus', 'Stimulus', 'Energy'))
 
+
+total.yr <- avg.yr.invest %>%
+  group_by(region, invest.type) %>% 
+  mutate(total.en = sum(avg.invest)) %>% 
+  ungroup()
+  
+View(total.yr)
+  
 e.group3 <- str_wrap(c('Fossil electricity & hydrogen w/o CCS', 
                        'Fossil fuels extraction & conversion', 
                        'Electricity - T&D and Storage', 
