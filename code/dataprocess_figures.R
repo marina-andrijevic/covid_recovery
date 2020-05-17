@@ -299,7 +299,7 @@ plot_grid(p7, p8, nrow = 1)
 
 # GDP data (World Bank) aggregated regionally 
 
-gdp.reg <- read.csv("API_NY.GDP.MKTP.CD_DS2_en_csv_v2_988718.csv", skip = 3) %>% 
+gdp.reg <- read.csv("data/API_NY.GDP.MKTP.CD_DS2_en_csv_v2_988718.csv", skip = 3) %>% 
   rename_all(tolower) %>% 
   left_join(iam.regs, by = 'country.code') %>% 
   filter(!region == 'EU' & !duplicated(country.code)) %>% 
@@ -317,7 +317,7 @@ gdp.reg <- read.csv("API_NY.GDP.MKTP.CD_DS2_en_csv_v2_988718.csv", skip = 3) %>%
   gather(region, gdp) %>% 
   as.data.frame()
 
-gdp.cntry <- read.csv("API_NY.GDP.MKTP.CD_DS2_en_csv_v2_988718.csv", skip = 3) %>% 
+gdp.cntry <- read.csv("data/API_NY.GDP.MKTP.CD_DS2_en_csv_v2_988718.csv", skip = 3) %>% 
   rename_all(tolower) %>% 
   pivot_longer(x1960:x2019, names_to = "year", values_to = "gdp") %>% 
   mutate(year = year %>% str_replace("x", "")) %>% 
