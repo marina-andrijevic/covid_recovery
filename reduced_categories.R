@@ -83,8 +83,8 @@ stim.reg <- stim.cntry %>%
 master.stim <- big.cntry %>% 
   select(-region, -id, -stimulus) %>% 
   rename(region = country.code) %>% 
-  bind_rows(stim.reg)
-
+  bind_rows(stim.reg) %>% 
+  arrange(region)
 
 # Figures
 
@@ -136,8 +136,8 @@ invest <- invest.interp %>%
 # For 2020-2025
 shift.invest <- invest %>% 
   filter(!year == 2025) %>% 
-  group_by(region, variable, scenario, year) %>% # model average
-  mutate(mod.avg = mean(investment)) %>% 
+  group_by(region, variable, scenario, year) %>% 
+  mutate(mod.avg = mean(investment)) %>% # model average
   ungroup() %>% 
   select(-investment) %>% 
   filter(model == 'MESSAGEix-GLOBIOM') %>% # not actual filtering but removing duplicates after taking model average above
@@ -145,12 +145,13 @@ shift.invest <- invest %>%
   mutate(total.invest = sum(mod.avg)) %>% # sum model averages for the time period
   ungroup() %>% 
   select(-mod.avg) %>% 
-  spread(scenario, total.invest)%>% 
+  spread(scenario, total.invest) %>% 
   filter(year == 2020) %>%  # since the values are aggregated over time, remove duplicates here 
   mutate(shift = `1.5C` - `CPol`) %>% # calculate the difference between scenarios per sector
   group_by(region) %>% 
   mutate(net = sum(shift)) %>% # show net investments for the 1.5C shift
-  ungroup()
+  ungroup() %>% 
+  select(-`NDC`, -`2C`, -model)
 
 
 # # # # # # # # 
@@ -405,7 +406,7 @@ gdp.cntry <- read.csv("API_NY.GDP.MKTP.CD_DS2_en_csv_v2_988718.csv", skip = 3) %
 
 scenario <- data.frame(scenario = c('1.5C', 'CPol'))
 
-master.stim <- big.cntry %>% 
+stim.prep <- big.cntry %>% 
   select(-region, -id, -stimulus) %>% 
   rename(region = country.code) %>% 
   bind_rows(stim.reg) %>% 
@@ -413,7 +414,6 @@ master.stim <- big.cntry %>%
          avg.invest = Stimulus) %>% 
   merge(scenario)
 
-View(master.stim)
 
 gdp.shares <- invest %>% 
   group_by(region, variable, scenario, year) %>% 
@@ -451,4 +451,36 @@ ggplot(gdp.shares %>% filter(region %in% reg2 & variable %in% e.group3 & scenari
 
 
 
+# Data for Joeri: 
 
+# Stimulus
+stim.gdp <- master.stim %>% 
+  left_join(gdp.master, by = 'region') %>% 
+  mutate(pct.gdp = Stimulus/gdp*100)
+
+write.csv(stim.gdp, 'Joeri_data/stimulus_gdp.csv')
+
+# Energy investment 
+
+total.energy <-invest %>% 
+  filter(!year == 2025) %>% 
+  group_by(region, variable, scenario, year) %>% 
+  mutate(mod.avg = mean(investment)) %>% # model average
+  ungroup() %>% 
+  select(-investment) %>% 
+  filter(model == 'MESSAGEix-GLOBIOM') %>% # not actual filtering but removing duplicates after taking model average above
+  group_by(region, variable, scenario) %>% 
+  mutate(total.invest = sum(mod.avg)) %>% # sum model averages for the time period
+  ungroup() %>% 
+  select(-mod.avg) %>%
+  filter(year == 2020) %>% 
+  select(-model, -year) %>% 
+  left_join(gdp.master, by = 'region')  %>% 
+  mutate(pct.gdp = total.invest/gdp*100)
+
+write.csv(total.energy, 'Joeri_data/energy_invest.csv')
+
+
+# Shift in energy invest
+
+write(shift.invest, 'Joeri_data/rel_change_energy.')
