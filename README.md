@@ -1,7 +1,5 @@
 # Supplementary Information for [TITLE] (2020)
 
-# Repository contents
-
 ## Code
 All figures generated for the Supplementary Information and the underlying data processing can be found in the R script "dataprocess_figures.R".
 
