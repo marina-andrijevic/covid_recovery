@@ -1,6 +1,14 @@
 # Supplementary Information for [TITLE] (2020)
 
-# Energy system investments
+# Repository contents
+
+## Code
+All data processing and figures generated for the Supplementary Information can be found in the R script "dataprocess_figures.R".
+
+# Data
+All data required to replicate this analysis and run the R script above are placed in the folder "data".
+
+## Energy system investments
 
 Energy system investment portfolios [REF McCollum et al. 2018] were derived from six global energy-economy models (IAMs): AIM/CGE [REF Fujimori et al. 2014, Fujimori et al. 2012], IMAGE [REF Stehfest et al. 2014], MESSAGEix-GLOBIOM [REF Fricko et al. 2017, Krey et al. 2016], POLES [REF Criqui et al. 2015], REMIND-MAgPIE [REF Kriegler et al. 2017, Luderer et al. 2013] and WITCH-GLOBIOM [REF Bosetti et al. 2006, Emmerling et al. 2016]. We focus on investments under the current policies (used as each model’s baseline) and on upscaling requirements necessary for the energy system compatible with the 1.5C target of the Paris Agreement. The models cover different types of energy technologies, including resource extraction, power generation, fuel conversion, transmission, energy storage and end-use demand services. We group these technologies into two broad sectors: fossil fuels (extraction and conversion of fossil fuels, electricity from fossil fuels without Carbon Capture and Storage (CCS) technologies and hydrogen from fossil fuels) and low carbon sources (extraction and conversion of nuclear energy, CCS, electricity from non-bio renewables, hydrogen from non-fossil fuels, extraction and conversion of bioenergy, electricity transmission and distribution and storage, and energy efficiency). The investment figures were corrected for inflation (from USD 2015 to current USD) [REF World Bank].
 
@@ -13,7 +21,7 @@ Figures xxx show the change in the investment needs over the 5-year time period,
 Figures xxx show the average yearly investment relative to the 2018 Gross Domestic Product (GDP) [REF World Bank]. 
 
 
-# Stimulus packages
+## Stimulus packages
 
 International Monetary Fund (IMF) has been tracking the policy measures announced by governments in response to the COVID-19 pandemic [REF]. For this analysis, we focus on the fiscal policy responses, which span a wide range of instruments such as spending and revenue measures (primarily in the health sector, and different types of liquidity support for affected businesses and workers), equity injections, asset purchases, extra-budgetary funds, guarantees on loans, etc. We extracted data for 175 countries and the European Union, announced up to May 15, 2020. 
 
@@ -21,7 +29,7 @@ Countries announced their stabilization packages in different levels of detail a
  
 
 
-# Regional definitions
+## Regional definitions
 
 OECD+: Includes the OECD 1990 countries as well as EU members and candidates
 Albania, Australia, Austria, Belgium, Bosnia and Herzegovina, Bulgaria, Canada, Croatia, Cyprus, Czech Republic, Denmark, Estonia, Fiji, Finland, France, French Polynesia,
