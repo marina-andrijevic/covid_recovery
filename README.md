@@ -23,7 +23,7 @@ Figures xxx show the average yearly investment relative to the 2018 Gross Domest
 
 International Monetary Fund (IMF) has been tracking the policy measures announced by governments in response to the COVID-19 pandemic [REF]. For this analysis, we focus on the fiscal policy responses, which span a wide range of instruments such as spending and revenue measures (primarily in the health sector, and different types of liquidity support for affected businesses and workers), equity injections, asset purchases, extra-budgetary funds, guarantees on loans, etc. We extracted data for 175 countries and the European Union, announced up to May 15, 2020. 
 
-Countries announced their stabilization packages in different levels of detail and scope. Here we group the fiscal measures broadly into those targeted at the health sector, those aimed at supporting individuals and households, those that aim at other economic sectors (economy at large), and we pool the rest into a category of general measures. Portions of fiscal measures allocated to the *general* category are either unspecified or do not belong to one of the categories above.
+Countries announced their stabilization packages in different levels of detail and scope. Here we group the fiscal measures broadly into those targeted at the health sector, those aimed at supporting individuals and households, those that aim at the economy at large (including loans and guarantees), and the remainder we pool into a category of general measures. Portions of fiscal measures allocated to the *general* category are either unspecified or do not belong to one of the categories above.
  
 
 
