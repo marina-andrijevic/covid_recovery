@@ -3,7 +3,7 @@
 # Repository contents
 
 ## Code
-All data processing and figures generated for the Supplementary Information can be found in the R script "dataprocess_figures.R".
+All figures generated for the Supplementary Information and the underlying data processing can be found in the R script "dataprocess_figures.R".
 
 ## Data
 All data required to replicate this analysis and run the R script above are placed in the folder "data".
