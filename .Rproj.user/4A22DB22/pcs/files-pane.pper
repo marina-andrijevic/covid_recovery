@@ -1,0 +1,9 @@
+{
+    "path" : "~/PhD/covid_recovery/covid_recovery",
+    "sortOrder" : [
+        {
+            "ascending" : true,
+            "columnIndex" : 2
+        }
+    ]
+}

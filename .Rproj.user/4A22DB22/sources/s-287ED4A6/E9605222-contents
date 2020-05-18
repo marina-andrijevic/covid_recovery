@@ -1,0 +1,18 @@
+# Yearly average
+shift.invest.yr <- invest %>% 
+  filter(!year == 2025) %>% 
+  group_by(model, region, variable, scenario) %>% 
+  mutate(total.invest = mean(investment, na.rm = T)) %>%  #average investments per year
+  ungroup()  %>% 
+  select(-investment) %>% 
+  spread(scenario, total.invest) %>% 
+  filter(year == 2020) %>%  # since the values are aggregated over time, remove duplicates here (not actual filtering)
+  mutate(shift = `1.5C` - `CPol`) %>% 
+  group_by(region, year, variable) %>% 
+  mutate(shift.mean.yr = mean(shift),
+         cpol.mean.yr = mean(`CPol`)) %>% #average shift across models
+  ungroup() %>% 
+  filter(model == 'MESSAGEix-GLOBIOM') %>% 
+  group_by(region) %>% 
+  mutate(net = sum(shift.mean.yr)) %>% # show net increment in the 1.5 shift
+  ungroup()

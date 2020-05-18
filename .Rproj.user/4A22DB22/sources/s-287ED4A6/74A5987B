@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1589744300961.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "74A5987B",
+    "lastKnownWriteTime" : 1589812251,
+    "last_content_update" : 1589812251,
+    "path" : "~/PhD/covid_recovery/covid_recovery/code/dataprocess_figures.R",
+    "project_path" : "code/dataprocess_figures.R",
+    "properties" : {
+        "cursorPosition" : "230,92",
+        "scrollLine" : "334"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
