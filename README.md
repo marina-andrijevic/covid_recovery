@@ -31,18 +31,18 @@ Countries announced their stabilization packages in different levels of detail a
 
 ### Regional definitions
 
-OECD+: Includes the OECD 1990 countries as well as EU members and candidates
+**OECD+:** Includes the OECD 1990 countries as well as EU members and candidates
 Albania, Australia, Austria, Belgium, Bosnia and Herzegovina, Bulgaria, Canada, Croatia, Cyprus, Czech Republic, Denmark, Estonia, Fiji, Finland, France, French Polynesia,
 Germany, Greece, Guam, Hungary, Iceland, Ireland, Italy, Japan, Latvia, Lithuania,
 Luxembourg, Malta, Macedonia, Montenegro, Netherlands, New Caledonia, New Zealand,
 Norway, Poland, Portugal, Romania, Samoa, Serbia, Slovakia, Slovenia, Solomon Islands,
 Spain, Sweden, Switzerland, Turkey, United Kingdom, United States of America, Vanuatu
 
-REF: Countries from the Reforming Ecomonies of the Former Soviet Union.
+**REF:** Countries from the Reforming Ecomonies of the Former Soviet Union.
 Armenia, Azerbaijan, Belarus, Georgia, Kazakhstan, Kyrgyzstan, Republic of Moldova,
 Russian Federation, Tajikistan, Turkmenistan, Ukraine, Uzbekistan
 
-ASIA: The region includes most Asian countries with the exception of the Middle East,
+**ASIA:** The region includes most Asian countries with the exception of the Middle East,
 Japan and Former Soviet Union states.
 Afghanistan, Bangladesh, Bhutan, Brunei Darussalam, Cambodia, China, China Hong Kong
 SAR, China Macao SAR, Democratic People's Republic of Korea, East Timor, India,
@@ -50,7 +50,7 @@ Indonesia, Lao People's Democratic Republic, Malaysia, Maldives, Mongolia, Myanm
 Nepal, Pakistan, Papua New Guinea, Philippines, Republic of Korea, Singapore, Sri Lanka,
 Taiwan, Thailand, Viet Nam
 
-MAF: This region includes the countries of the Middle East and Africa.
+**MAF:** This region includes the countries of the Middle East and Africa.
 Algeria, Angola, Bahrain, Benin, Botswana, Burkina Faso, Burundi, Cameroon, Cape Verde,
 Central African Republic, Chad, Comoros, Congo, Cote d'Ivoire, Democratic Republic of
 the Congo, Djibouti, Egypt, Equatorial Guinea, Eritrea, Ethiopia, Eswatini, Gabon, Gambia, Ghana, Guinea, Guinea-Bissau, Iran (Islamic Republic of), Iraq, Israel, Jordan, Kenya, Kuwait,
@@ -59,10 +59,10 @@ Mauritius, Morocco, Mozambique, Namibia, Niger, Nigeria, Oman, Qatar, Reunion,
 Rwanda, Saudi Arabia, Senegal, Sierra Leone, Somalia, South Africa, Sudan, Syrian Arab Republic, Togo, Tunisia, Uganda, United Arab Emirates, United Republic of
 Tanzania, Western Sahara, Yemen, Zambia, Zimbabwe
 
-LAM:  This region includes the countries of Latin America and the Caribbean.
+**LAM:**  This region includes the countries of Latin America and the Caribbean.
 Argentina, Bahamas, Barbados, Belize, Bolivia, Brazil, Chile, Colombia, Costa Rica, Cuba,
 Dominican Republic, Ecuador, El Salvador, Guadeloupe, Guatemala, Guyana, Haiti, Honduras, Jamaica, Martinique, Mexico, Netherlands Antilles, Nicaragua, Panama, Paraguay,
 Peru, Puerto Rico, Suriname, Trinidad and Tobago, Uruguay, Venezuela
 
-Four individual economies: China, European Union, India, United States
+**Four individual economies:** China, European Union, India, United States
 
