@@ -55,13 +55,16 @@ eu.ms <- c('AUT', 'BEL', 'BGR', 'HRV', 'CYP', 'CZE', 'DNK', 'EST', 'FIN', 'FRA',
 # Aggegregation of stimulus pacakges for four big economies: China, European Union (supranational + member states), India, United States
 
 big.cntry <- stim.cntry %>% 
+  filter(!country.code == 'EU') %>% 
   mutate(country.code = ifelse(country.code %in% eu.ms, 'EU', as.character(country.code))) %>% 
-  group_by(country.code, component) %>% 
+  group_by(country.code) %>% 
   mutate(Stimulus = sum(stimulus, na.rm = T)) %>% 
   ungroup() %>% 
   mutate(id = paste0(country.code, region, component)) %>%
   filter(!duplicated(id) & !region == 'EU') %>% 
   filter(country.code %in% reg2)
+
+View(big.cntry)
 
 # Stimulus packages aggregated by IAM regions
 
@@ -129,7 +132,7 @@ invest <- invest.interp %>%
          + `Extraction and Conversion - Bioenergy` + `Electricity - T&D and Storage` + `Energy Efficiency`) %>% 
   gather(variable, investment, -c(model, region, scenario, year)) %>% 
   filter(variable %in% e.group2) %>% 
-  mutate(investment = investment * 1.0728) #adjust for inflation
+  mutate(investment = investment * 1.0728) #adjust for inflation to current dollars
 
 # Derive shifts in investments from current policies to 1.5C-compatible energy sector
 
@@ -160,9 +163,10 @@ shift.invest <- invest %>%
 
 # Energy investments
 
-# Total 
+# Total energy investments in current policy baseline and 1.5C scenario
 
-# IAM regions
+# For IAM regions
+
 p1 <- ggplot(shift.invest %>% filter(region %in% reg1 & variable %in% e.group2)) +
   geom_bar(aes(region, `CPol`, fill = factor(variable, levels = e.group2)), width = 0.5, stat = 'identity', color = 'white', size = 0.1) +
   labs(x = 'Scenario', y = 'USD billion', fill = '', title = 'Total investments (2020-2025)\nCurrent policy') + #total investments 2020-2025
@@ -191,7 +195,7 @@ p2 <- ggplot(shift.invest %>% filter(region %in% reg1 & variable %in% e.group2))
 
 plot_grid(p1, p2, nrow = 1, rel_widths = c(2/5, 3/5))
 
-# Four big economies
+# For four big economies
 
 p3 <- ggplot(shift.invest %>% filter(region %in% reg2 & variable %in% e.group2)) +
   geom_bar(aes(region, `CPol`, fill = factor(variable, levels = e.group2)), width = 0.5, stat = 'identity', color = 'white', size = 0.1) +
@@ -224,7 +228,7 @@ plot_grid(p3, p4, nrow = 1, rel_widths = c(2/5, 3/5))
 
 # Stimulus packages
 
-# Total
+# Disaggregated in four categories: health, individuals and households, economy and general 
 
 stim.col <- brewer.pal(9, "Blues")[3:9] #colors for the stiumulus pacakges
 
