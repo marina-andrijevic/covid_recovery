@@ -1,4 +1,4 @@
-# Code and data for reproducing the analysis of "COVID-19 recovery stimulus dwarfs near-term climate change investment needs (Andrijevic et al., 2020)
+# Code and data for reproducing the analysis of "COVID-19 recovery stimulus dwarfs near-term climate change investment needs" (Andrijevic et al., 2020)
 
 ## Code
 All figures generated for the Supplementary Information and the underlying data processing can be found in the R script "dataprocess_figures.R".
