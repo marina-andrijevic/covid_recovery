@@ -1,4 +1,4 @@
-# Code and data for reproducing the analysis of "COVID-19 recovery stimulus dwarfs near-term climate change investment needs" (Andrijevic et al., 2020)
+# Code and data for reproducing the analysis of "COVID-19 recovery funds dwarf clean energy investment needs" (Andrijevic et al., 2020)
 
 ## Code
 All figures generated for the Supplementary Information and the underlying data processing can be found in the R script "dataprocess_figures.R".
@@ -51,12 +51,6 @@ We do not account for governments' announcements to channel funds into internati
 Energy system investment portfolios [REF McCollum et al. 2018] were derived from six global energy-economy models (IAMs): AIM/CGE [REF Fujimori et al. 2014, Fujimori et al. 2012], IMAGE [REF Stehfest et al. 2014], MESSAGEix-GLOBIOM [REF Fricko et al. 2017, Krey et al. 2016], POLES [REF Criqui et al. 2015], REMIND-MAgPIE [REF Kriegler et al. 2017, Luderer et al. 2013] and WITCH-GLOBIOM [REF Bosetti et al. 2006, Emmerling et al. 2016]. We focus on investments under the current policies (used as each model’s baseline) and on upscaling requirements necessary for the energy system compatible with the 1.5°C target of the Paris Agreement. The models cover different types of energy technologies, including resource extraction, power generation, fuel conversion, transmission, energy storage and end-use demand services. We group these technologies into two broad sectors: fossil fuels (extraction and conversion of fossil fuels, electricity from fossil fuels without Carbon Capture and Storage (CCS) technologies and hydrogen from fossil fuels) and low carbon sources (extraction and conversion of nuclear energy, CCS, electricity from non-bio renewables, hydrogen from non-fossil fuels, extraction and conversion of bioenergy, electricity transmission and distribution and storage, and energy efficiency). The investment figures are corrected for inflation (from USD 2015 to current USD) [REF World Bank].
 
 Our analysis focuses on the near term investment needs from 2020 to 2024, taking the model average for the underlying yearly data.
-
-Figures xxx show the total investment needs over the 5-year time period.
-
-Figures xxx show the change in the investment needs over the 5-year time period, from the current policy baseline to the 1.5°C-compatible pathway.
-
-Figures xxx show the average yearly investment relative to the 2018 Gross Domestic Product (GDP) [REF World Bank]. 
 
 
 ### Stimulus packages
