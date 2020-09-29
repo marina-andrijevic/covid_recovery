@@ -6,7 +6,7 @@ All figures generated for the Supplementary Information and the underlying data 
 ## Data
 All data required to replicate this analysis and run the R script above are placed in the folder "data".
 
-## Materials and Methods
+## Materials and methods
 ### Energy system investments
 
 Energy system investment portfolios (1) were derived from six global energy-economy, or ‘integrated assessment’, models (IAMs): AIM/CGE (2), IMAGE (3), MESSAGEix-GLOBIOM (4), POLES (5),REMIND-MAgPIE (6), and WITCH-GLOBIOM (7). In this analysis we focus on the near-term (2020-2024) investment needs under a current policies scenario (i.e., each model’s baseline) and on the upscaling requirements for moving toward an energy system compatible with the 1.5C target of the Paris Agreement. The models cover different types of energy technologies, including resource extraction, power generation, fuel conversion, transmission, energy storage and end-use demand services. We group these technologies into two broad sectors for our investments analysis:
@@ -25,13 +25,13 @@ Estimating current and future energy investment flows is not an exact science. P
 
 ## Stimulus packages
 
-The International Monetary Fund (IMF) has been tracking the policy measures announced by governments in response to the COVID-19 pandemic (8). For this analysis, we focus on the fiscal policy responses, which span a wide range of instruments such as spending and revenue measures, equity injections, asset purchases, extra-budgetary funds, guarantees on loans, etc. We extracted data for 176 countries and the European Union, announced until July 23, 2020.
+The International Monetary Fund (IMF) has been tracking the policy measures announced by governments in response to the COVID-19 pandemic (8). For this analysis, we focus on the fiscal policy responses, which span a wide range of instruments such as spending and revenue measures, equity injections, asset purchases, extra-budgetary funds, guarantees on loans, etc. We extracted data for 149 countries and the European Union, with the latest update on August 28, 2020.
 
 Countries announced their stabilization packages in different levels of detail and scope. Here we group the fiscal measures broadly in line with the IMF. The packages are split into:
 •	“Above-the-line” measures which contain mostly spending measures, and which are further divided into those aimed at supporting the health sector (in figures labeled as Health sector spending) and those intended for all other sectors of the economy (in figures labeled General spending), which include supporting individuals, households and businesses, as well as forgone and deferred revenue.
 •	Liquidity measures, which including loans, guarantees and quasi-fiscal operations (labeled Liquidity support).
 
-We do not account for governments' announcements to channel funds into international assistance, nor the recovery funds agreed between governments and the international finance institutions. See Table S1 for country-level detail.
+In absence of specific sectoral allocations, all announced stimulus is classified as General spending. We do not account for governments' announcements to channel funds into international assistance, nor the recovery funds agreed between governments and the international finance institutions. See Table S1 for country-level detail.
 
 
 ### References:
@@ -44,22 +44,6 @@ We do not account for governments' announcements to channel funds into internati
 6. 	E. Kriegler, N. Bauer, A. Popp, F. Humpenöder, M. Leimbach, J. Strefler, L. Baumstark, B. L. Bodirsky, J. Hilaire, D. Klein, I. Mouratiadou, I. Weindl, C. Bertram, J. P. Dietrich, G. Luderer, M. Pehl, R. Pietzcker, F. Piontek, H. Lotze-Campen, A. Biewald, M. Bonsch, A. Giannousakis, U. Kreidenweis, C. Müller, S. Rolinski, A. Schultes, J. Schwanitz, M. Stevanovic, K. Calvin, J. Emmerling, S. Fujimori, O. Edenhofer, Fossil-fueled development (SSP5): An energy and resource intensive scenario for the 21st century. Glob. Environ. Chang. 42, 297–315 (2017).
 7. 	V. Bosetti, C. Carraro, M. Galeotti, E. Massetti, M. Tavoni, “WITCH. A World Induced Technical Change Hybrid Model” (2006), (available at https://econpapers.repec.org/RePEc:ven:wpaper:2006_46).
 8. 	International Monetary Fund, Policy Responses to COVID-19 (2020).
-
-
-### Energy system investments
-
-Energy system investment portfolios [REF McCollum et al. 2018] were derived from six global energy-economy models (IAMs): AIM/CGE [REF Fujimori et al. 2014, Fujimori et al. 2012], IMAGE [REF Stehfest et al. 2014], MESSAGEix-GLOBIOM [REF Fricko et al. 2017, Krey et al. 2016], POLES [REF Criqui et al. 2015], REMIND-MAgPIE [REF Kriegler et al. 2017, Luderer et al. 2013] and WITCH-GLOBIOM [REF Bosetti et al. 2006, Emmerling et al. 2016]. We focus on investments under the current policies (used as each model’s baseline) and on upscaling requirements necessary for the energy system compatible with the 1.5°C target of the Paris Agreement. The models cover different types of energy technologies, including resource extraction, power generation, fuel conversion, transmission, energy storage and end-use demand services. We group these technologies into two broad sectors: fossil fuels (extraction and conversion of fossil fuels, electricity from fossil fuels without Carbon Capture and Storage (CCS) technologies and hydrogen from fossil fuels) and low carbon sources (extraction and conversion of nuclear energy, CCS, electricity from non-bio renewables, hydrogen from non-fossil fuels, extraction and conversion of bioenergy, electricity transmission and distribution and storage, and energy efficiency). The investment figures are corrected for inflation (from USD 2015 to current USD) [REF World Bank].
-
-Our analysis focuses on the near term investment needs from 2020 to 2024, taking the model average for the underlying yearly data.
-
-
-### Stimulus packages
-
-International Monetary Fund (IMF) has been tracking the policy measures announced by governments in response to the COVID-19 pandemic [REF]. For this analysis, we focus on the fiscal policy responses, which span a wide range of instruments such as spending and revenue measures (primarily in the health sector, and different types of liquidity support for affected businesses and workers), equity injections, asset purchases, extra-budgetary funds, guarantees on loans, etc. We extracted data for 175 countries and the European Union, announced up to May 15, 2020. 
-
-Countries announced their stabilization packages in different levels of detail and scope. Here we group the fiscal measures broadly into those targeted at the health sector, those aimed at supporting individuals and households, those that aim at the economy at large (including loans and guarantees), and the remainder we pool into a category of general measures. Portions of fiscal measures allocated to the *general* category are either unspecified or do not belong to one of the categories above.
-We do not account for governments' announcements to channel funds into international assistance, nor the recovery funds agreed between governments and the international finance institutions.
- 
 
 
 ### Regional definitions
